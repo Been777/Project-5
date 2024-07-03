@@ -1,6 +1,7 @@
 package com.sparta.fooddeliveryapp.domain.user.entity;
 
-
+import com.sparta.fooddeliveryapp.domain.like.entity.StoreLike;
+import com.sparta.fooddeliveryapp.domain.like.entity.ReviewLike;
 import com.sparta.fooddeliveryapp.global.common.TimeStamped;
 import jakarta.persistence.*;
 import lombok.*;
@@ -62,8 +63,21 @@ public class User extends TimeStamped {
     @Column(name = "kakao_id")
     private Long kakaoId;
 
-    // image 가져오기
-    // 생성 및 수정 시간은 타 클래스 implement 가져오는걸로
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+    private List<StoreLike> storeLikes = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+    private List<ReviewLike> reviewLikes = new ArrayList<>();
+
+    private int storeLikeCount;
+    private int reviewLikeCount;
+
+    @PostPersist
+    @PostUpdate
+    public void updateLikeCounts() {
+        this.storeLikeCount = this.storeLikes.size();
+        this.reviewLikeCount = this.reviewLikes.size();
+    }
 
     public void setUsedPasswordList(List<UsedPassword> usedPasswordList) {
         this.usedPasswordList.clear();

@@ -5,6 +5,8 @@ import com.sparta.fooddeliveryapp.domain.user.entity.UsedPassword;
 import com.sparta.fooddeliveryapp.domain.user.entity.User;
 import com.sparta.fooddeliveryapp.domain.user.entity.UserRoleEnum;
 import com.sparta.fooddeliveryapp.domain.user.entity.UserStatusEnum;
+import com.sparta.fooddeliveryapp.domain.user.repository.ReviewLikeRepository;
+import com.sparta.fooddeliveryapp.domain.user.repository.StoreLikeRepository;
 import com.sparta.fooddeliveryapp.domain.user.repository.UsedPasswordRepository;
 import com.sparta.fooddeliveryapp.domain.user.repository.UserRepository;
 import com.sparta.fooddeliveryapp.global.error.exception.*;
@@ -30,6 +32,8 @@ public class UserService {
     private final JwtUtil jwtUtil;
     private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
     private final UsedPasswordRepository usedPasswordRepository;
+    private final StoreLikeRepository storeLikeRepository;
+    private final ReviewLikeRepository reviewLikeRepository;
 
 
     public void signup(SignupRequestDto signupRequestDto) {
@@ -141,10 +145,14 @@ public class UserService {
         String email = user.getEmail();
         String intro = user.getIntro();
 
-        ProfileResponseDto result = new ProfileResponseDto(userId, name, nickname, address, phone, email, intro);
+        int likedStoresCount = storeLikeRepository.countByUser_UserId(userId);
+        int likedReviewsCount = reviewLikeRepository.countByUser_UserId(userId);
+
+        ProfileResponseDto result = new ProfileResponseDto(userId, name, nickname, address, phone, email, intro, likedStoresCount, likedReviewsCount);
         log.info("프로필 조회 완료");
         return result;
     }
+
 
     public List<UserSearchResponseDto> UserSearch(String nickname) {
         List<User> searchedUsers = userRepository.findAllByNickname(nickname);
@@ -168,8 +176,6 @@ public class UserService {
         user.setRefreshToken(null);
         log.info("logout success");
     }
-
-
 
     @Transactional
     public void updatePassword(UpdatePasswordRequestDto requestDto, User user) {
