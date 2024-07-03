@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -25,4 +27,7 @@ public class UserLike {
     private UserLikeType userLikeType;
 
     private Long typeId;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 }

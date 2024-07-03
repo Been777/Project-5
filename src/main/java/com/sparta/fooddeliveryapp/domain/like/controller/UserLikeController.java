@@ -60,4 +60,33 @@ public class UserLikeController {
                         .data(userLikeList)
                         .build());
     }
+
+    @GetMapping("/posts")
+    public ResponseEntity<ResponseDto> getLikedPosts(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestBody UserLikeRequestDto pageRequestDto
+    ) {
+        List<UserLikeResponseDto> likedPosts = userLikeService.getLikedPosts(userDetails.getUser(), pageRequestDto.getPage(), pageRequestDto.getSize());
+        return ResponseEntity.status(HttpStatus.OK).body(
+                ResponseDto.builder()
+                        .status(HttpStatus.OK)
+                        .message("좋아요한 게시글 조회 성공")
+                        .data(likedPosts)
+                        .build());
+    }
+
+    @GetMapping("/comments")
+    public ResponseEntity<ResponseDto> getLikedComments(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestBody UserLikeRequestDto pageRequestDto
+    ) {
+        List<UserLikeResponseDto> likedComments = userLikeService.getLikedComments(userDetails.getUser(), pageRequestDto.getPage(), pageRequestDto.getSize());
+        return ResponseEntity.status(HttpStatus.OK).body(
+                ResponseDto.builder()
+                        .status(HttpStatus.OK)
+                        .message("좋아요한 댓글 조회 성공")
+                        .data(likedComments)
+                        .build());
+    }
 }
+

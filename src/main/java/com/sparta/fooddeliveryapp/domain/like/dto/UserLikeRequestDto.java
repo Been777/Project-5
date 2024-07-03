@@ -7,4 +7,6 @@ import lombok.Getter;
 public class UserLikeRequestDto {
     private UserLikeType userLikeType;
     private Long typeId;
+    private int page;
+    private int size;
 }
